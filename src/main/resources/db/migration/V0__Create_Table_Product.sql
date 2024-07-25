@@ -1,4 +1,4 @@
-CREATE TABLE product (
+CREATE TABLE `product` (
     id BIGINT NOT NULL AUTO_INCREMENT,
     sku VARCHAR(10) NOT NULL,
     name VARCHAR(50) NOT NULL,
