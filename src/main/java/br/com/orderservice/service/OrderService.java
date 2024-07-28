@@ -173,7 +173,6 @@ public class OrderService {
         order.setPhoneNumber(orderDTO.getPhoneNumber());
         order.setAddress(orderDTO.getAddress());
         order.setCreatedDate(orderDTO.getCreatedDate());
-        order.setTotalValue(orderDTO.getTotalValue());
 
         return order;
     }
