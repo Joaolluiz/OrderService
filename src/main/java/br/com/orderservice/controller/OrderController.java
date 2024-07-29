@@ -3,7 +3,7 @@ package br.com.orderservice.controller;
 import br.com.orderservice.dto.OrderDTO;
 import br.com.orderservice.dto.OrderForStatusDTO;
 import br.com.orderservice.service.OrderService;
-import br.com.orderservice.util.MediaType;
+import br.com.orderservice.util.CustomMediaType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,7 +27,7 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON)
+    @GetMapping(produces = CustomMediaType.APPLICATION_JSON)
     @Operation(summary = "Lists all orders", description = "Lists all orders",
             tags = {"Order"},
             responses = {
@@ -49,7 +49,7 @@ public class OrderController {
     }
 
     @GetMapping(value = "/{id}",
-            produces = MediaType.APPLICATION_JSON)
+            produces = CustomMediaType.APPLICATION_JSON)
     @Operation(summary = "Finds a order by id", description = "Finds a order by id",
             tags = {"Order"},
             responses = {
@@ -68,8 +68,8 @@ public class OrderController {
     }
 
     @PostMapping(
-            consumes = MediaType.APPLICATION_JSON,
-            produces = MediaType.APPLICATION_JSON)
+            consumes = CustomMediaType.APPLICATION_JSON,
+            produces = CustomMediaType.APPLICATION_JSON)
     @Operation(summary = "Adds a new order",
             description = "Adds a new order by passing in a JSON representation of the order!",
             tags = {"Order"},
@@ -91,8 +91,8 @@ public class OrderController {
     }
 
     @PutMapping(value = "/{id}",
-            consumes = MediaType.APPLICATION_JSON,
-            produces = MediaType.APPLICATION_JSON)
+            consumes = CustomMediaType.APPLICATION_JSON,
+            produces = CustomMediaType.APPLICATION_JSON)
     @Operation(summary = "Updates an order",
             description = "Updates an order by passing in a JSON representation of the order!",
             tags = {"Order"},
@@ -112,8 +112,8 @@ public class OrderController {
     }
 
     @PatchMapping(value = "/status",
-            consumes = MediaType.APPLICATION_JSON,
-            produces = MediaType.APPLICATION_JSON)
+            consumes = CustomMediaType.APPLICATION_JSON,
+            produces = CustomMediaType.APPLICATION_JSON)
     @Operation(summary = "Updates a status of an order",
             description = "Updates a status of an order by passing in a JSON representation of the order(id, status)!",
             tags = {"Order"},
