@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 @Service
@@ -31,6 +32,13 @@ public class ProductService {
         return productRepository
                 .findAll(pageable)
                 .map(product -> productMapper.toProductDTO(product));
+    }
+
+    public List<ProductDTO> findAllProductsForReport() {
+
+        logger.info("Finding all products for report");
+
+        return productMapper.toProductDTOList(productRepository.findAll());
     }
 
     public ProductDTO findProductById(Long id) {
@@ -76,7 +84,6 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No product for this id!"));
 
-        product.setSku(productDTO.getSku());
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setValue(productDTO.getValue());

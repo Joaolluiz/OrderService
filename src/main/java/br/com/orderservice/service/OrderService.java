@@ -95,6 +95,7 @@ public class OrderService {
                 totalValue = totalValue.add(productTotal);
 
                 order.setTotalValue(totalValue);
+                order.setStatus(Status.EVALUATION);
                 order.getProducts().add(orderProduct);
             }
         }

@@ -2,7 +2,8 @@ package br.com.orderservice.controller;
 
 import br.com.orderservice.dto.ProductDTO;
 import br.com.orderservice.service.ProductService;
-import br.com.orderservice.util.MediaType;
+import br.com.orderservice.service.ReportService;
+import br.com.orderservice.util.CustomMediaType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,13 +12,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+
+import java.io.ByteArrayInputStream;
 import java.net.URI;
 
 @RestController
@@ -28,7 +33,10 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON)
+    @Autowired
+    ReportService reportService;
+
+    @GetMapping(produces = CustomMediaType.APPLICATION_JSON)
     @Operation(summary = "Lists all products", description = "Lists all products",
             tags = {"Product"},
             responses = {
@@ -49,8 +57,35 @@ public class ProductController {
         return productService.findAllProducts(pageable);
     }
 
+    @GetMapping("/report")
+    @Operation(summary = "Generate a report of products", description = "Generate a report of products",
+    tags = {"Product"},
+    responses = {
+            @ApiResponse(description = "PDF report generated", responseCode = "200",
+                    content = @Content(mediaType = "application/pdf")),
+            @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
+    })
+    public ResponseEntity<InputStreamResource> getProductReport() {
+        try {
+            ByteArrayInputStream bis = reportService.generateProductReport();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "attachment; filename=productReport.pdf");
+
+            return ResponseEntity
+                    .ok()
+                    .headers(headers)
+                    .contentType(CustomMediaType.APPLICATION_PDF)
+                    .body(new InputStreamResource(bis));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
+
     @GetMapping(value = "/{id}",
-            produces = MediaType.APPLICATION_JSON)
+            produces = CustomMediaType.APPLICATION_JSON)
     @Operation(summary = "Finds a product by id", description = "Finds a product by id",
             tags = {"Product"},
             responses = {
@@ -69,8 +104,8 @@ public class ProductController {
     }
 
     @PostMapping(
-            consumes = MediaType.APPLICATION_JSON,
-            produces = MediaType.APPLICATION_JSON)
+            consumes = CustomMediaType.APPLICATION_JSON,
+            produces = CustomMediaType.APPLICATION_JSON)
     @Operation(summary = "Adds a new Product",
             description = "Adds a new Product by passing in a JSON representation of the Product!",
             tags = {"Product"},
@@ -92,8 +127,8 @@ public class ProductController {
     }
 
     @PutMapping(value = "/{id}",
-            consumes = MediaType.APPLICATION_JSON,
-            produces = MediaType.APPLICATION_JSON)
+            consumes = CustomMediaType.APPLICATION_JSON,
+            produces = CustomMediaType.APPLICATION_JSON)
     @Operation(summary = "Updates a Product",
             description = "Updates a Product by passing in a JSON representation of the product!",
             tags = {"Product"},
